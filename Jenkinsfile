@@ -13,7 +13,7 @@ pipeline {
                 sh 'docker rmi mkumar0522/node-todo-test'
             }
         }
-        stage('Build Docker Image'){
+        stage('Containerize Application'){
             steps{
                 sh 'docker build . -t mkumar0522/node-todo-test:latest'
             }
