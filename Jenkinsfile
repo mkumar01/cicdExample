@@ -11,7 +11,9 @@ pipeline {
         stage('Environment Cleanup'){
             steps{
                 
-                sh 'docker stop $(docker ps -q)'
+               sh 'docker ps -q -f status=exited | xargs --no-run-if-empty docker rm'
+               sh 'docker images -q -f dangling=true | xargs --no-run-if-empty docker rmi'
+               sh 'docker volume ls -qf dangling=true | xargs -r docker volume rm' 
                 
             }
         }
@@ -20,15 +22,7 @@ pipeline {
                 sh 'docker build . -t mkumar0522/node-todo-test:latest'
             }
         }
-        stage('Push Image to Repository'){
-            steps{
-                withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-        	     sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-                 sh 'docker push mkumar0522/node-todo-test:latest'
-                 
-                }
-            }
-        }
+     
         stage('Deploy Application to k8 cluster'){
             steps{
                 sh "docker-compose down && docker-compose up -d"
