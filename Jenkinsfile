@@ -10,8 +10,9 @@ pipeline {
         
         stage('Environment Cleanup'){
             steps{
-                sh 'docker rmi mkumar0522/node-todo-test'
-                exit 0
+                
+                sh 'docker stop $(docker ps -q)'
+                
             }
         }
         stage('Containerize Application'){
@@ -24,7 +25,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
         	     sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
                  sh 'docker push mkumar0522/node-todo-test:latest'
-                  exit 0  
+                 
                 }
             }
         }
