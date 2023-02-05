@@ -7,7 +7,13 @@ pipeline {
                 git url: 'https://github.com/mkumar01/cicdExample.git', branch: 'master' 
             }
         }
-        stage('Build and Test'){
+        
+        stage('Environment Cleanup'){
+            steps{
+                sh 'docker rmi mkumar0522/node-todo-test'
+            }
+        }
+        stage('Build Docker Image'){
             steps{
                 sh 'docker build . -t mkumar0522/node-todo-test:latest'
             }
