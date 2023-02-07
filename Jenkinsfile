@@ -23,7 +23,7 @@ pipeline {
             }
         }
      
-        stage('Deploy Application to k8 cluster'){
+        stage('Deploy Application to Container'){
             steps{
                 sh "docker-compose down && docker-compose up -d"
             }
